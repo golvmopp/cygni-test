@@ -1,0 +1,22 @@
+{
+  "name": "cygni-test",
+  "version": "1.0.0",
+  "description": "Rest API for Cygni tech interview",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/golvmopp/cygni-test.git"
+  },
+  "author": "Dahlberg William",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/golvmopp/cygni-test/issues"
+  },
+  "homepage": "https://github.com/golvmopp/cygni-test#readme",
+  "dependencies": {
+    "express": "^4.16.2"
+  }
+}
