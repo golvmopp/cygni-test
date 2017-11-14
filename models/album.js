@@ -6,7 +6,7 @@ function Album() {
   this.ID = ""
   this.year = 0
   this.imageURL = ""
-}
+};
 
 Album.prototype.fetchImageURL = function () {
   this.imageURL = "Url for " + this.ID
