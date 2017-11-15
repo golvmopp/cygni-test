@@ -9,8 +9,8 @@ const request = require('request-promise');
 function Artist(id) {
   // The MBID taken as input
   this.id = id;
-  this.name = ""
-  this.description = ""
+  this.name = "notfound"
+  this.description = "notfound"
   this.albums = []
   // The Method. Called after constructor creation, returns a
   // Promise which fills the artist with correct property values
