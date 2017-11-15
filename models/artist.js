@@ -83,6 +83,8 @@ function fillArtist(artist) {
       return getAlbumImage(artist.albums.length - 1, artist);
 
     })
+  }, (err) => {
+    console.error("Could not find artist with ID " + artist.id);
   })
 }
 

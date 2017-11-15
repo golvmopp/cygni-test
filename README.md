@@ -24,3 +24,5 @@ The server is now running locally on port 3000. Below is an example of how to us
 ```
 http://localhost:3000/artist/d6d6919a-0fbc-4440-bf1f-5e35d76c6a63
 ```
+
+The above will output JSON data for the artist Skillet.

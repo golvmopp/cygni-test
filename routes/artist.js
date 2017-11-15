@@ -21,6 +21,8 @@ router.get('/:id', function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(artist));
     console.log("Sent " + artist.name);
+  }, (err) => {
+    console.error("There was an error with fillArtist");
   })
 });
 
