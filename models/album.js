@@ -9,6 +9,4 @@ function Album(id, name, date) {
   this.imageURL = ""
 };
 
-
-
 module.exports = Album;

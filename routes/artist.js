@@ -7,17 +7,21 @@
 
 const Artist = require('../models/artist.js');
 const express = require('express');
+const path = require('path');
 const router = express.Router();
 
-// Should not do anything. Maybe explain to the user how they're doing
-// it wrong.
 router.get('/', function(req, res) {
-  res.send("~/artist")
+  res.sendFile(path.join(__dirname + '/../index.html'));
 });
 
+// When an ID is supplied, the action starts
 router.get('/:id', function(req, res) {
+  // Initialize an artist with the ID
   var artist = new Artist(req.params.id);
+  // Run fillArtist
   artist.fillArtist(artist).then((result) => {
+    // When the promise is fulfilled, stringify the artist and send it
+    // to the browser.
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(artist));
     console.log("Sent " + artist.name);

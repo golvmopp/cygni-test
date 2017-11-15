@@ -1,5 +1,6 @@
 /*
   A model of an artist, containing its ID, a description and a list of albums.
+  Also contains the important method fillArtist
 */
 
 const Album = require('./album.js');
@@ -8,11 +9,8 @@ const request = require('request-promise');
 function Artist(id) {
   // The MBID taken as input
   this.id = id;
-  // Name of the artist
   this.name = ""
-  // Fetch the artist description from Wikipedia, based on their name
   this.description = ""
-  // A list of Album objects, each being a released album of the artist
   this.albums = []
   // The Method. Called after constructor creation, returns a
   // Promise which fills the artist with correct property values
@@ -33,16 +31,12 @@ var reqObj = {
   }
 }
 
-
-
 function fillArtist(artist) {
   // Make the request to music brainz
   reqObj.url = "https://musicbrainz.org/ws/2/artist/" + artist.id
                 + "?&fmt=json&inc=url-rels+release-groups";
-  var MBObject;
-
   return reqObj.getData().then((result) => {
-    MBObject = JSON.parse(result);
+    var MBObject = JSON.parse(result);
     artist.name = MBObject.name;
 
     // Find the wikipedia name from the MB data
@@ -50,7 +44,7 @@ function fillArtist(artist) {
     for (r in MBObject["relations"]) {
       var t = MBObject["relations"][r]["type"]
       if (t === "wikipedia") {
-        wikiLink = MBObject.relations[r]["url"]["resource"]
+        wikiLink = MBObject["relations"][r]["url"]["resource"]
         break;
       }
     }
@@ -72,7 +66,6 @@ function fillArtist(artist) {
           "n&prop=extracts&exintro=true&redirects=true&titles=" + wikiName;
     return reqObj.getData().then((result) => {
       var wikiObject = JSON.parse(result)
-
       // The page number is found in the JSON object
       // If called correctly, there should only be one page number
       for (p in wikiObject["query"]["pages"]) {
@@ -80,14 +73,21 @@ function fillArtist(artist) {
         break;
       }
 
+      // Start the recursive album image function
       return getAlbumImage(artist.albums.length - 1, artist);
 
+    }, (err) => {
+      console.error("Could not find Wiki page with name " + wikiName);
+      return
     })
   }, (err) => {
     console.error("Could not find artist with ID " + artist.id);
+    return
   })
 }
 
+// Recursively going through the list of albums, getting images from
+// the Cover Art Archive
 function getAlbumImage(currentAlbum, artist) {
   if (currentAlbum < 0) return;
 

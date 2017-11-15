@@ -1,20 +1,17 @@
 const express = require('express');
 const path = require('path');
-
-const index = require('./routes/index');
 const artist = require('./routes/artist');
 
 const app = express();
+const PORT = 3000;
 
-// Display a basic index, maybe with link to documentation
 app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname + '/index.html'));
 });
 
-app.use('/', index);
+// Use artist routing
 app.use('/artist', artist);
 
-
-app.listen(3000);
+app.listen(PORT);
 
 module.exports = app;
