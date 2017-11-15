@@ -30,4 +30,4 @@ The above will output JSON data for Sturm und Drang.
 
 ### Problems
 
-Fetching images from is very slow, even though they have no restrictions.
+[SOLVED] Fetching images from is very slow, even though they have no restrictions.
