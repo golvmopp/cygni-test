@@ -106,22 +106,4 @@ function getAlbumImage(currentAlbum, artist) {
   })
 }
 
-// This function may be unecessary
-function getName(artistobject) {
-  var name = "placeholder name";
-  name = artistobject.name;
-  return name;
-}
-
-function fetchDescription(id) {
-  var description = "placeholder description";
-
-  return description;
-}
-
-function getAlbums(json) {
-  var albums = [];
-  return albums;
-}
-
 module.exports = Artist;
