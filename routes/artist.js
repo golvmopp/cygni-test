@@ -18,7 +18,9 @@ router.get('/', function(req, res) {
 router.get('/:id', function(req, res) {
   var artist = new Artist(req.params.id);
   artist.fillArtist(artist).then((result) => {
+    res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(artist));
+    console.log("Sent " + artist.name);
   })
 });
 

@@ -9,11 +9,13 @@ function Artist(id) {
   // The MBID taken as input
   this.id = id;
   // Name of the artist
-  this.name = "placeholder name"
+  this.name = ""
   // Fetch the artist description from Wikipedia, based on their name
-  this.description = "placeholder description"
+  this.description = ""
   // A list of Album objects, each being a released album of the artist
   this.albums = []
+  // The Method. Called after constructor creation, returns a
+  // Promise which fills the artist with correct property values
   this.fillArtist = fillArtist;
 };
 
@@ -59,8 +61,8 @@ function fillArtist(artist) {
       if(MBObject["release-groups"][a]["primary-type"] === "Album") {
         var albumId = MBObject["release-groups"][a]["id"];
         var albumName = MBObject["release-groups"][a]["title"];
-        var year = MBObject["release-groups"][a]["first-release-date"];
-        var album = new Album(albumId, albumName, year);
+        var release = MBObject["release-groups"][a]["first-release-date"];
+        var album = new Album(albumId, albumName, release);
         artist.albums.push(album);
       }
     }
@@ -72,17 +74,35 @@ function fillArtist(artist) {
       var wikiObject = JSON.parse(result)
 
       // The page number is found in the JSON object
+      // If called correctly, there should only be one page number
       for (p in wikiObject["query"]["pages"]) {
         artist.description = wikiObject["query"]["pages"][p]["extract"]
         break;
       }
 
+      return getAlbumImage(artist.albums.length - 1, artist);
 
     })
   })
 }
 
+function getAlbumImage(currentAlbum, artist) {
+  if (currentAlbum < 0) return;
 
+  reqObj.url = "http://coverartarchive.org/release-group/"
+      + artist.albums[currentAlbum].ID;
+
+  return reqObj.getData().then((result) => {
+    var imageObj = JSON.parse(result);
+    var imgUrl = imageObj["images"][0]["image"];
+    artist.albums[currentAlbum].imageURL = imgUrl;
+    return getAlbumImage(currentAlbum - 1, artist);
+  }, (error) => {
+    console.log("No image for album " + artist.albums[currentAlbum].name);
+    artist.albums[currentAlbum].imageURL = "no image"
+    return getAlbumImage(currentAlbum - 1, artist);
+  })
+}
 
 // This function may be unecessary
 function getName(artistobject) {

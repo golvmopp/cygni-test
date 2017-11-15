@@ -2,10 +2,10 @@
   An album, containing ID, release year, link to image, etc.
 */
 
-function Album(id, name, year) {
+function Album(id, name, date) {
   this.ID = id
   this.name = name
-  this.year = year
+  this.release = date
   this.imageURL = ""
 };
 
