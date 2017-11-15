@@ -69,41 +69,53 @@ function fillArtist(artist) {
       // The page number is found in the JSON object
       // If called correctly, there should only be one page number
       for (p in wikiObject["query"]["pages"]) {
-        artist.description = wikiObject["query"]["pages"][p]["extract"]
+        artist.description = wikiObject["query"]["pages"][p]["extract"];
         break;
       }
 
       // Start the recursive album image function
-      return getAlbumImage(artist.albums.length - 1, artist);
+      // return getAlbumImage(artist.albums.length - 1, artist);
+
+      // Create promises for album images
+      var albumPromises = [];
+      for (currentAlbum in artist.albums) {
+        reqObj.url = "http://coverartarchive.org/release-group/"
+            + artist.albums[currentAlbum].ID;
+        var newPromise = reqObj.getData();
+        albumPromises.push(newPromise);
+      }
+
+      // Failsafe for concurrency
+      // From https://nmaggioni.xyz/2016/10/13/Avoiding-Promise-all-fail-fast-behavior/
+      const toResultObject = (promise) => {
+          return promise
+          .then(result => ({ success: true, result }))
+          .catch(error => ({ success: false, error }));
+      };
+
+      // Running all album lookups simultaneously
+      return Promise.all(albumPromises.map(toResultObject)).then((results) => {
+        for (var i = 0; i < results.length; i++) {
+          if (results[i].success) {
+            var imageObj = JSON.parse(results[i].result)
+            var imgUrl = imageObj["images"][0]["image"];
+            artist.albums[i].imageURL = imgUrl;
+          } else {
+            artist.albums[i].imageURL = "no image";
+          }
+        }
+      }, (error) => {
+        console.log("Error in toResultObject " + error);
+      })
 
     }, (err) => {
       console.error("Could not find Wiki page with name " + wikiName);
-      return
-    })
+      return;
+    });
   }, (err) => {
     console.error("Could not find artist with ID " + artist.id);
-    return
-  })
-}
-
-// Recursively going through the list of albums, getting images from
-// the Cover Art Archive
-function getAlbumImage(currentAlbum, artist) {
-  if (currentAlbum < 0) return;
-
-  reqObj.url = "http://coverartarchive.org/release-group/"
-      + artist.albums[currentAlbum].ID;
-
-  return reqObj.getData().then((result) => {
-    var imageObj = JSON.parse(result);
-    var imgUrl = imageObj["images"][0]["image"];
-    artist.albums[currentAlbum].imageURL = imgUrl;
-    return getAlbumImage(currentAlbum - 1, artist);
-  }, (error) => {
-    console.log("No image for album " + artist.albums[currentAlbum].name);
-    artist.albums[currentAlbum].imageURL = "no image"
-    return getAlbumImage(currentAlbum - 1, artist);
-  })
+    return;
+  });
 }
 
 module.exports = Artist;
