@@ -30,4 +30,8 @@ The above will output JSON data for Sturm und Drang.
 
 ### Problems
 
+No error handling when the MBID is incorrect, could do 404 there.
+
+Might need to enable CORS if to be used by other applications.
+
 [SOLVED] Fetching images from is very slow, even though they have no restrictions.
